@@ -5,7 +5,7 @@ public record Entry(string Path, long Bytes) {
     public string SizeText => Format(Bytes);
     public static string Format(long n) { string[] units = ["B", "KB", "MB", "GB", "TB"]; double v=n; int i=0; while(v>=1024 && i<4){v/=1024;i++;} return $"{v:N1} {units[i]}"; }
 }
-public record ScanResult(List<Entry> Folders, List<Entry> Files, long Bytes, long Count, long Skipped);
+public record ScanResult(List<Entry> Folders, List<Entry> Files, long Bytes, long Count, long Skipped) { public List<Entry> TopLevelFolders { get; init; } = []; }
 public static class Scanner {
     public static ScanResult Run(string root, IProgress<string>? progress, CancellationToken token) {
         var folders=new List<Entry>(); var largest=new PriorityQueue<Entry,long>(); long total=0,count=0,skipped=0;
@@ -34,6 +34,6 @@ public static class Scanner {
             } catch(Exception e) when(e is IOException or UnauthorizedAccessException) {skipped++;}
             if(clock.ElapsedMilliseconds>150) {progress?.Report($"{count:N0} arquivos • {Entry.Format(total)} • {item.Path}");clock.Restart();}
         }
-        return new(folders.OrderByDescending(x=>x.Bytes).Take(500).ToList(),largest.UnorderedItems.Select(x=>x.Element).OrderByDescending(x=>x.Bytes).ToList(),total,count,skipped);
+        return new ScanResult(folders.OrderByDescending(x=>x.Bytes).Take(500).ToList(),largest.UnorderedItems.Select(x=>x.Element).OrderByDescending(x=>x.Bytes).ToList(),total,count,skipped) { TopLevelFolders = folders.Where(x => string.Equals(Directory.GetParent(x.Path)?.FullName, Path.TrimEndingDirectorySeparator(Path.GetFullPath(root)), StringComparison.OrdinalIgnoreCase)).OrderByDescending(x => x.Bytes).ToList() };
     }
 }

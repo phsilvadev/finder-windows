@@ -29,7 +29,7 @@ A análise usa enumeração de diretórios, **não MFT**. A velocidade depende d
 
 Os resultados são um retrato do momento: arquivos podem mudar durante ou depois da análise. Revise arquivos em AppData, temporários e pastas de aplicativos antes de excluir. As proteções são preventivas, não garantem que um arquivo fora das áreas protegidas seja dispensável. O diálogo do Windows pode informar indisponibilidade da Lixeira: cancele se não desejar uma exclusão permanente. Não é necessário executar como administrador.
 
-Interface inspirada no conceito apresentado, com listas reais no lugar do mapa ilustrativo. Não inclui desinstalador, identificação de duplicados, limpeza automática nem leitura de MFT.
+Interface refeita seguindo o conceito: menu lateral, cartões escuros, mapa proporcional interativo das pastas, maiores pastas com barras e cartões de limpeza. O mapa usa pastas irmãs, evitando contar subpastas duas vezes. A barra superior representa ocupação física da unidade; a legenda do mapa mostra tamanhos lógicos da pasta analisada. Não há valores fictícios: o mapa aparece após a análise. A tela inicial analisa por padrão a unidade do Windows. Não inclui desinstalador, identificação de duplicados, limpeza automática nem leitura de MFT.
 
 Este projeto pode ser compilado no Linux com EnableWindowsTargeting; a interface e integração com Explorer/Lixeira precisam ser validadas no Windows.
 
@@ -38,3 +38,7 @@ Este projeto pode ser compilado no Linux com EnableWindowsTargeting; a interface
 Compilar: `dotnet build EspacoLivre.csproj -c Release`
 
 Testar o analisador (também no Linux): `dotnet run --project tests/ScannerTests.csproj`
+
+## Atualizar a interface
+
+Depois de atualizar o repositório, feche a versão antiga e execute `Iniciar.bat` novamente. Para recriar a versão independente, execute `Publicar.bat` e use o executável da pasta `dist`. A nova interface substitui as abas antigas por navegação lateral.
